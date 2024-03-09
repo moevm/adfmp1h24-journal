@@ -16,6 +16,7 @@ import adfmp1h24.journal.ui.theme.Primary
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,5 +48,30 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}){
             containerColor = Primary,
         )) {}
 
-    ScratchCard(onNavigate)
+    /* filters: */
+    Accordion(
+        sections = listOf(
+            CollapsableListSection(
+                header = {
+                    Text(text = "Filters", color = Primary)
+                },
+                rows = listOf(
+                    { Filters() }
+                )
+            )
+        )
+    )
+    /* cards: */
+    Accordion(
+        sections = listOf(
+            CollapsableListSection(
+                header = {
+                    Text(text = "February", color = Primary)
+                },
+                rows = listOf(
+                    { ScratchCard(onNavigate) }
+                )
+            )
+        )
+    )
 }

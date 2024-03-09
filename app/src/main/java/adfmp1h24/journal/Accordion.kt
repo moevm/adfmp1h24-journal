@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -38,7 +39,9 @@ fun Accordion(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     CollapsableListRow(
                         { section.header() },
-                        Modifier.clickable { expandState[i] = !expand }.weight(1f)
+                        Modifier.clickable { expandState[i] = !expand }
+                            .weight(1f)
+                            .padding(vertical = 10.dp)
                     )
                     val rotationAngle by animateFloatAsState(if (expand) 0f else -90f)
                     Icon(
@@ -51,7 +54,10 @@ fun Accordion(
             }
             if (expand) {
                 items(section.rows) { row ->
-                    CollapsableListRow({ row() })
+                    CollapsableListRow(
+                        { row() },
+                        Modifier.padding(vertical = 10.dp)
+                    )
                 }
             }
         }

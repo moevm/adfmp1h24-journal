@@ -71,7 +71,17 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}){
                 rows = listOf(
                     { ScratchCard(onNavigate) }
                 )
-            )
+            ),
+            CollapsableListSection(
+                header = {
+                    Text(text = "January", color = Primary)
+                },
+                rows = listOf(
+                    { ScratchCard(onNavigate) },
+                    { ScratchCard(onNavigate) },
+                    { ScratchCard(onNavigate) }
+                )
+            ),
         )
     )
 }

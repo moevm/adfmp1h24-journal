@@ -13,15 +13,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import adfmp1h24.journal.ui.theme.Primary
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onNavigate: (ScreenType) -> Unit = {}){
+fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState, scope: CoroutineScope){
     var text by remember { mutableStateOf("") } // Query for SearchBar
     var active by remember { mutableStateOf(false) } // Active state for SearchBar
 
@@ -39,7 +43,11 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}){
             active = it
         },
         leadingIcon = {
-          Icon(imageVector = Icons.Default.Menu, contentDescription = null)
+          Icon(
+              modifier = Modifier.clickable{ scope.launch { sidebarState.open() } },
+              imageVector = Icons.Default.Menu,
+              contentDescription = null
+          )
         },
         trailingIcon = {
             Icon(imageVector = Icons.Default.Search, contentDescription = null)

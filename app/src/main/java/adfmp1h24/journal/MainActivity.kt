@@ -39,27 +39,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun initApp() {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
-    val scope = rememberCoroutineScope()
-    Sidebar(
-        scope = scope,
-        content = {
-             Scaffold() {
-                 var mod = Modifier.padding(it)
-                 var screen by remember { mutableStateOf(ScreenType.Library) }
-                 Column(modifier = mod.padding(15.dp)) {
-                     when (screen) {
-                         ScreenType.Library -> MainScreen(
-                             onNavigate = { screen = it },
-                             sidebarState = drawerState,
-                             scope = scope
-                         )
-                         ScreenType.Scratch -> ScratchScreen(onNavigate = { screen = it })
-                         ScreenType.About -> AboutScreen(onNavigate = { screen = it })
-                     }
-                 }
-             }
-         },
-        drawerState = drawerState
-    )
+    Sidebar()
 }

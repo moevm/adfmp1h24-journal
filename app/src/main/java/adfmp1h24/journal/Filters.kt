@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.dp
 fun Filters() {
     OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
         border = BorderStroke(1.dp, Primary),
         ) {
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp)) {

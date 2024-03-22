@@ -48,9 +48,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+fun EditableScreen(scratch: Scratch) {
+
+}
+
+fun ViewScreen(scratch: Scratch) {
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScratchScreen(){
+fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null){
     Row {
         Text(
             /* TODO: название из хранилища скетча */
@@ -67,7 +75,7 @@ fun ScratchScreen(){
     }
 
     /* TODO: информация из хранилища скетча */
-    Filters()
+    Filters(isScratch = true)
 
     /* TODO: описание из хранилища скетча */
     var description by remember { mutableStateOf("Trip description") }

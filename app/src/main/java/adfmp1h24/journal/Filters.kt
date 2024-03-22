@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Filters() {
+fun Filters(isScratch: Boolean = false) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,21 +29,32 @@ fun Filters() {
         border = BorderStroke(1.dp, Primary),
         ) {
         /* TODO: активнный поиск по датам */
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp)) {
-            Icon(
-                imageVector = Icons.Default.DateRange,
-                contentDescription = null,
-                tint = Primary
-            )
-            Text(text = "From: dd.mm.year")
-        }
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
-            Icon(
-                imageVector = Icons.Default.DateRange,
-                contentDescription = null,
-                tint = Primary
-            )
-            Text(text = "Till: dd.mm.year")
+        if (!isScratch) {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp)) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = null,
+                    tint = Primary
+                )
+                Text(text = "From: dd.mm.year")
+            }
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = null,
+                    tint = Primary
+                )
+                Text(text = "Till: dd.mm.year")
+            }
+        } else {
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp)) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = null,
+                    tint = Primary
+                )
+                Text(text = "dd.mm.year")
+            }
         }
         /* TODO: эм... ну мы не успеем запилить поиск по месту, при всём желании */
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(bottom = 10.dp)) {

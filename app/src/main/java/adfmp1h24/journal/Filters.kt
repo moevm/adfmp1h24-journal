@@ -28,6 +28,7 @@ fun Filters() {
             .padding(vertical = 10.dp),
         border = BorderStroke(1.dp, Primary),
         ) {
+        /* TODO: активнный поиск по датам */
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp)) {
             Icon(
                 imageVector = Icons.Default.DateRange,
@@ -44,6 +45,7 @@ fun Filters() {
             )
             Text(text = "Till: dd.mm.year")
         }
+        /* TODO: эм... ну мы не успеем запилить поиск по месту, при всём желании */
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(bottom = 10.dp)) {
             Icon(
                 imageVector = Icons.Default.Place,

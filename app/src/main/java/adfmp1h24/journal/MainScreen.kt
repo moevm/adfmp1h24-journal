@@ -26,8 +26,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState, scope: CoroutineScope){
-    var text by remember { mutableStateOf("") } // Query for SearchBar
-    var active by remember { mutableStateOf(false) } // Active state for SearchBar
+
+    /* поисковая строка */
+    /* TODO: фильтрация по поисковой строке */
+    var text by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
 
     SearchBar(modifier = Modifier.fillMaxWidth(),
         query = text,
@@ -44,19 +47,21 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
         },
         leadingIcon = {
           Icon(
+              /* открытие сайдбара */
               modifier = Modifier.clickable{ scope.launch { sidebarState.open() } },
               imageVector = Icons.Default.Menu,
               contentDescription = null
           )
         },
         trailingIcon = {
+            /* TODO: закрытие меню и поиск */
             Icon(imageVector = Icons.Default.Search, contentDescription = null)
         },
         colors = SearchBarDefaults.colors(
             containerColor = Primary,
         )) {}
 
-    /* filters: */
+    /* Фильтры поиска: */
     Accordion(
         sections = listOf(
             CollapsableListSection(
@@ -69,13 +74,15 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
             )
         )
     )
-    /* cards: */
+    /* Скрывающаяся вкладка с месяцами: */
     Accordion(
         sections = listOf(
             CollapsableListSection(
+                /* заголовок вкладки */
                 header = {
                     Text(text = "February", color = Primary)
                 },
+                /* контент вкладки */
                 rows = listOf(
                     { ScratchCard(onNavigate) }
                 )

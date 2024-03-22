@@ -34,6 +34,7 @@ fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
             .fillMaxWidth()
             .height(175.dp),
         shape = RoundedCornerShape(0.dp),
+        /* TODO: переход в скетч с данными в хранилище (условно по id) */
         onClick = { onNavigate(ScreenType.Scratch) }
     ){
         Box(
@@ -45,6 +46,7 @@ fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
             Image(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
+                /* TODO: картинка из хранилища скетча */
                 painter = painterResource(id = R.drawable.cardback),
                 contentDescription = "back"
             )
@@ -52,6 +54,7 @@ fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(10.dp),
+                /* TODO: название из хранилища скетча */
                 text = "Trip title",
                 color = White
             )
@@ -66,11 +69,12 @@ fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
         ) {
             Text(
                 modifier = Modifier.padding(horizontal = 10.dp),
+                /* TODO: дата из хранилища скетча */
                 text = "11.02.2024",
                 color = White
             )
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = { /* TODO: поделиться контентом */ },
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(horizontal = 10.dp)

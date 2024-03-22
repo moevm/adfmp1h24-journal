@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    /* точка входа всего приложения */
                     initApp()
                 }
             }
@@ -39,5 +40,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun initApp() {
+    /* в сайдбаре весь контент */
     Sidebar()
 }

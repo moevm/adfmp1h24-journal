@@ -50,9 +50,10 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScratchScreen(onNavigate: (ScreenType) -> Unit = {}){
+fun ScratchScreen(){
     Row {
         Text(
+            /* TODO: название из хранилища скетча */
             text = "TRIP SCRATCH LABEL",
             modifier = Modifier
                 .padding(15.dp)
@@ -60,13 +61,15 @@ fun ScratchScreen(onNavigate: (ScreenType) -> Unit = {}){
             fontSize = 25.sp,
             color = Primary
         )
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { /*TODO: hide*/ }) {
             Icon(imageVector = Icons.Default.Create, contentDescription = null, tint = Primary)
         }
     }
 
+    /* TODO: информация из хранилища скетча */
     Filters()
 
+    /* TODO: описание из хранилища скетча */
     var description by remember { mutableStateOf("Trip description") }
     OutlinedTextField(
         value = description,
@@ -89,6 +92,7 @@ fun ScratchScreen(onNavigate: (ScreenType) -> Unit = {}){
         color = Primary
     )
 
+    /* TODO: фото из хранилища скетча */
     val photos = listOf(
         painterResource(id = cardback),
         painterResource(id = cardback),

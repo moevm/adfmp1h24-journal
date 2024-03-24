@@ -71,7 +71,7 @@ fun Sidebar() {
                         sidebarState = drawerState,
                         scope = scope
                     )
-                    ScreenType.Scratch -> ScratchScreen()
+                    ScreenType.Scratch -> ScratchScreen(isEdit = true)
                     ScreenType.About -> AboutScreen(onNavigate = { screen = it })
                 }
             }

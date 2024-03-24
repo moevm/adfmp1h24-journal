@@ -13,16 +13,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import adfmp1h24.journal.ui.theme.Primary
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import getScratchList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState, scope: CoroutineScope){
@@ -83,19 +88,9 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
                     Text(text = "February", color = Primary)
                 },
                 /* контент вкладки */
-                rows = listOf(
-                    { ScratchCard(onNavigate) }
-                )
-            ),
-            CollapsableListSection(
-                header = {
-                    Text(text = "January", color = Primary)
-                },
-                rows = listOf(
-                    { ScratchCard(onNavigate) },
-                    { ScratchCard(onNavigate) },
-                    { ScratchCard(onNavigate) }
-                )
+                rows = getScratchList(LocalContext.current).map { scratch ->
+                    { ScratchCard(scratch = scratch) }
+                }
             ),
         )
     )

@@ -1,8 +1,11 @@
 package adfmp1h24.journal
 
+import Scratch
 import adfmp1h24.journal.ui.theme.PreDark
 import adfmp1h24.journal.ui.theme.Secondary
 import adfmp1h24.journal.ui.theme.White
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,10 +28,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
+fun ScratchCard(scratch: Scratch, onNavigate: (ScreenType) -> Unit = {}){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,7 +60,7 @@ fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
                     .align(Alignment.BottomStart)
                     .padding(10.dp),
                 /* TODO: название из хранилища скетча */
-                text = "Trip title",
+                text = scratch.label,
                 color = White
             )
         }
@@ -70,7 +75,7 @@ fun ScratchCard(onNavigate: (ScreenType) -> Unit = {}){
             Text(
                 modifier = Modifier.padding(horizontal = 10.dp),
                 /* TODO: дата из хранилища скетча */
-                text = "11.02.2024",
+                text = scratch.date.format(DateTimeFormatter.ISO_DATE),
                 color = White
             )
             IconButton(

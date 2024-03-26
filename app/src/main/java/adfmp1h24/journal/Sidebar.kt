@@ -72,7 +72,7 @@ fun Sidebar() {
                         scope = scope
                     )
                     ScreenType.Scratch -> ScratchScreen(isEdit = true, null, {screen = it})
-                    ScreenType.About -> AboutScreen(onNavigate = { screen = it })
+                    ScreenType.About -> AboutScreen(navigate = { screen = it })
                 }
             }
         }

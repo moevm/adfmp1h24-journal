@@ -58,7 +58,7 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
         },
         active = active,
         onActiveChange = {
-            active = it
+            //active = it
         },
         leadingIcon = {
           Icon(
@@ -93,6 +93,9 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
     val scratchList = getScratchList(LocalContext.current)
     val groupedByMonth = mutableMapOf<Int, MutableList<Scratch>>()
     for(s in scratchList){
+        if (text.length > 0 && !s.description.lowercase().contains(text.lowercase())){
+            continue
+        }
         val month = s.date.substring(5, 7).toInt()
         if (groupedByMonth[month] == null){
             groupedByMonth[month] = mutableListOf()

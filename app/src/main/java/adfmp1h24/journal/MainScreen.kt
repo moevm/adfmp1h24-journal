@@ -17,7 +17,14 @@ import adfmp1h24.journal.ui.theme.Primary
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SearchBarDefaults
@@ -90,21 +97,23 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
         }
         groupedByMonth[month]!!.add(s)
     }
-    for(p in groupedByMonth){
-        /* Скрывающаяся вкладка с месяцами: */
-        Accordion(
-            sections = listOf(
-                CollapsableListSection(
-                    /* заголовок вкладки */
-                    header = {
-                        Text(text = monthMass[p.key-1], color = Primary)
-                    },
-                    /* контент вкладки */
-                    rows = p.value.map { scratch ->
-                        { ScratchCard(scratch = scratch) }
-                    }
-                ),
+    Column(modifier = Modifier.verticalScroll(rememberScrollState()).heightIn(0.dp, 10000.dp)) {
+        for (p in groupedByMonth) {
+            /* Скрывающаяся вкладка с месяцами: */
+            Accordion(
+                sections = listOf(
+                    CollapsableListSection(
+                        /* заголовок вкладки */
+                        header = {
+                            Text(text = monthMass[p.key - 1], color = Primary)
+                        },
+                        /* контент вкладки */
+                        rows = p.value.map { scratch ->
+                            { ScratchCard(scratch = scratch) }
+                        }
+                    ),
+                )
             )
-        )
+        }
     }
 }

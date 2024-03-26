@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import getScratchList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +43,6 @@ import kotlinx.coroutines.launch
 fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState, scope: CoroutineScope){
 
     /* поисковая строка */
-    /* TODO: фильтрация по поисковой строке */
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     var openDescDialog by remember { mutableStateOf(false) }
@@ -69,7 +70,6 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
           )
         },
         trailingIcon = {
-            /* TODO: закрытие меню и поиск */
             Icon(imageVector = Icons.Default.Search, contentDescription = null)
         },
         colors = SearchBarDefaults.colors(

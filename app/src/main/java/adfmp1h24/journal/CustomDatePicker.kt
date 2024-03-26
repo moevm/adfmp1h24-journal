@@ -37,7 +37,7 @@ fun CustomDatePicker(date: LocalDate, callback: (LocalDate) -> Unit) {
     )
     if (isOpened) {
         CalendarDialog(
-            state = rememberUseCaseState(visible = true, true, onCloseRequest = { } ),
+            state = rememberUseCaseState(visible = true, true, onCloseRequest = { isOpened = false} ),
             config = CalendarConfig(
                 yearSelection = true,
                 style = CalendarStyle.MONTH,

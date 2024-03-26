@@ -1,5 +1,6 @@
 package adfmp1h24.journal
 
+import Scratch
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -79,19 +80,30 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
             )
         )
     )
-    /* Скрывающаяся вкладка с месяцами: */
-    Accordion(
-        sections = listOf(
-            CollapsableListSection(
-                /* заголовок вкладки */
-                header = {
-                    Text(text = "February", color = Primary)
-                },
-                /* контент вкладки */
-                rows = getScratchList(LocalContext.current).map { scratch ->
-                    { ScratchCard(scratch = scratch) }
-                }
-            ),
+    val scratchList = getScratchList(LocalContext.current)
+    val groupedByMonth = mutableMapOf<Int, MutableList<Scratch>>()
+    for(s in scratchList){
+        val month = s.date.substring(5, 7).toInt()
+        if (groupedByMonth[month] == null){
+            groupedByMonth[month] = mutableListOf()
+        }
+        groupedByMonth[month]!!.add(s)
+    }
+    for(p in groupedByMonth){
+        /* Скрывающаяся вкладка с месяцами: */
+        Accordion(
+            sections = listOf(
+                CollapsableListSection(
+                    /* заголовок вкладки */
+                    header = {
+                        Text(text = "February", color = Primary)
+                    },
+                    /* контент вкладки */
+                    rows = p.value.map { scratch ->
+                        { ScratchCard(scratch = scratch) }
+                    }
+                ),
+            )
         )
-    )
+    }
 }

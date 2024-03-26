@@ -53,6 +53,7 @@ import saveScratch
 import java.security.AccessController.getContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import androidx.activity.compose.BackHandler
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +128,8 @@ fun ViewScreen(scratch: Scratch) {
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null){
+fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (ScreenType) -> Unit){
+    BackHandler(onBack = {navigate(ScreenType.Library)})
     if (isEdit) {
         EditableScreen()
     } else {

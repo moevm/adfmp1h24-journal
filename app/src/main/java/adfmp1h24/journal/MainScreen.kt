@@ -44,6 +44,8 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
     /* TODO: фильтрация по поисковой строке */
     var text by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
+    var openDescDialog by remember { mutableStateOf(false) }
+    var currentDesc by remember { mutableStateOf("") }
 
     SearchBar(modifier = Modifier.fillMaxWidth(),
         query = text,
@@ -97,7 +99,9 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
         }
         groupedByMonth[month]!!.add(s)
     }
-    Column(modifier = Modifier.verticalScroll(rememberScrollState()).heightIn(0.dp, 10000.dp)) {
+    Column(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .heightIn(0.dp, 10000.dp)) {
         for (p in groupedByMonth) {
             /* Скрывающаяся вкладка с месяцами: */
             Accordion(
@@ -109,11 +113,17 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
                         },
                         /* контент вкладки */
                         rows = p.value.map { scratch ->
-                            { ScratchCard(scratch = scratch) }
+                            { ScratchCard(scratch = scratch, onNavigate = {currentDesc = scratch.description; openDescDialog = true}) }
                         }
                     ),
                 )
             )
+        }
+    }
+    if(openDescDialog){
+        DescriptionDialog(desc = currentDesc) {
+            openDescDialog = false
+
         }
     }
 }

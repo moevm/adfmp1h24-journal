@@ -80,6 +80,7 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
             )
         )
     )
+    val monthMass = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
     val scratchList = getScratchList(LocalContext.current)
     val groupedByMonth = mutableMapOf<Int, MutableList<Scratch>>()
     for(s in scratchList){
@@ -96,7 +97,7 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
                 CollapsableListSection(
                     /* заголовок вкладки */
                     header = {
-                        Text(text = "February", color = Primary)
+                        Text(text = monthMass[p.key-1], color = Primary)
                     },
                     /* контент вкладки */
                     rows = p.value.map { scratch ->

@@ -149,7 +149,7 @@ fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (
         }
 
         /* TODO: информация из хранилища скетча */
-        Filters(isScratch = true)
+        Filters(isScratch = true, {}, {})
 
         /* TODO: описание из хранилища скетча */
         var description by remember { mutableStateOf("Trip description") }

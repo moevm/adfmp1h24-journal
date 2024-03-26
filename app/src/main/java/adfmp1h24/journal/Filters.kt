@@ -30,8 +30,8 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Filters(isScratch: Boolean = false) {
-    var fromDate by remember { mutableStateOf(LocalDate.now().format(DateTimeFormatter.ISO_DATE)) }
+fun Filters(isScratch: Boolean = false, fromDateChanged: (String) -> Unit, toDateChanged: (String) -> Unit) {
+    var fromDate by remember { mutableStateOf(LocalDate.of(1990, 1,1).format(DateTimeFormatter.ISO_DATE)) }
     var toDate by remember { mutableStateOf(LocalDate.now().format(DateTimeFormatter.ISO_DATE)) }
     OutlinedCard(
         modifier = Modifier
@@ -39,7 +39,6 @@ fun Filters(isScratch: Boolean = false) {
             .padding(vertical = 10.dp),
         border = BorderStroke(1.dp, Primary),
         ) {
-        /* TODO: активнный поиск по датам */
         if (!isScratch) {
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp)) {
                 Icon(
@@ -51,7 +50,7 @@ fun Filters(isScratch: Boolean = false) {
                     Text("From: ")
                     CustomDatePicker(
                         date = LocalDate.parse(fromDate, DateTimeFormatter.ISO_DATE)
-                    ) { fromDate = it.format(DateTimeFormatter.ISO_DATE) }
+                    ) { fromDate = it.format(DateTimeFormatter.ISO_DATE); fromDateChanged(fromDate) }
                 }
             }
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
@@ -64,7 +63,7 @@ fun Filters(isScratch: Boolean = false) {
                     Text("To: ")
                     CustomDatePicker(
                         date = LocalDate.parse(toDate, DateTimeFormatter.ISO_DATE)
-                    ) { toDate = it.format(DateTimeFormatter.ISO_DATE) }
+                    ) { toDate = it.format(DateTimeFormatter.ISO_DATE); toDateChanged(toDate) }
                 }
             }
         } else {

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import getScratchList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -47,6 +48,8 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
     var active by remember { mutableStateOf(false) }
     var openDescDialog by remember { mutableStateOf(false) }
     var currentDesc by remember { mutableStateOf("") }
+    var fromDate by remember { mutableStateOf(LocalDate.of(1990, 1,1).format(DateTimeFormatter.ISO_DATE)) }
+    var toDate by remember { mutableStateOf(LocalDate.now().format(DateTimeFormatter.ISO_DATE)) }
 
     SearchBar(modifier = Modifier.fillMaxWidth(),
         query = text,
@@ -84,7 +87,7 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
                     Text(text = "Filters", color = Primary)
                 },
                 rows = listOf(
-                    { Filters() }
+                    { Filters(false, {fromDate = it}, {toDate = it}) }
                 )
             )
         )
@@ -92,9 +95,16 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
     val monthMass = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
     val scratchList = getScratchList(LocalContext.current)
     val groupedByMonth = mutableMapOf<Int, MutableList<Scratch>>()
+    val fromDateISO = SimpleDateFormat("yyyy-MM-dd").parse(fromDate)
+    val toDateISO = SimpleDateFormat("yyyy-MM-dd").parse(toDate)
+
     for(s in scratchList){
+        val dateISO = SimpleDateFormat("yyyy-MM-dd").parse(s.date)
         if (text.length > 0 && !s.description.lowercase().contains(text.lowercase())){
             continue
+        }
+        if (dateISO.before(fromDateISO) || dateISO.after(toDateISO)){
+            continue;
         }
         val month = s.date.substring(5, 7).toInt()
         if (groupedByMonth[month] == null){

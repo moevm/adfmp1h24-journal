@@ -45,7 +45,7 @@ fun Accordion(
                     )
                     val rotationAngle by animateFloatAsState(if (expand) 0f else -90f)
                     Icon(
-                        modifier = Modifier.rotate(rotationAngle),
+                        modifier = Modifier.rotate(rotationAngle).clickable{expandState[i] = !expand},
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                         tint = Primary

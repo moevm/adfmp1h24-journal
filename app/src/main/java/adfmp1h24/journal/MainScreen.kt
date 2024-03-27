@@ -1,5 +1,6 @@
 package adfmp1h24.journal
 
+import Scratch
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -13,21 +14,42 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import adfmp1h24.journal.ui.theme.Primary
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import getScratchList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState, scope: CoroutineScope){
-    var text by remember { mutableStateOf("") } // Query for SearchBar
-    var active by remember { mutableStateOf(false) } // Active state for SearchBar
+
+    /* поисковая строка */
+    var text by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+    var openDescDialog by remember { mutableStateOf(false) }
+    var currentDesc by remember { mutableStateOf("") }
+    var fromDate by remember { mutableStateOf(LocalDate.of(1990, 1,1).format(DateTimeFormatter.ISO_DATE)) }
+    var toDate by remember { mutableStateOf(LocalDate.now().format(DateTimeFormatter.ISO_DATE)) }
 
     SearchBar(modifier = Modifier.fillMaxWidth(),
         query = text,
@@ -40,10 +62,11 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
         },
         active = active,
         onActiveChange = {
-            active = it
+            //active = it
         },
         leadingIcon = {
           Icon(
+              /* открытие сайдбара */
               modifier = Modifier.clickable{ scope.launch { sidebarState.open() } },
               imageVector = Icons.Default.Menu,
               contentDescription = null
@@ -56,7 +79,7 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
             containerColor = Primary,
         )) {}
 
-    /* filters: */
+    /* Фильтры поиска: */
     Accordion(
         sections = listOf(
             CollapsableListSection(
@@ -64,32 +87,56 @@ fun MainScreen(onNavigate: (ScreenType) -> Unit = {}, sidebarState: DrawerState,
                     Text(text = "Filters", color = Primary)
                 },
                 rows = listOf(
-                    { Filters() }
+                    { Filters(false, {fromDate = it}, {toDate = it}) }
                 )
             )
         )
     )
-    /* cards: */
-    Accordion(
-        sections = listOf(
-            CollapsableListSection(
-                header = {
-                    Text(text = "February", color = Primary)
-                },
-                rows = listOf(
-                    { ScratchCard(onNavigate) }
+    val monthMass = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+    val scratchList = getScratchList(LocalContext.current)
+    val groupedByMonth = mutableMapOf<Int, MutableList<Scratch>>()
+    val fromDateISO = SimpleDateFormat("yyyy-MM-dd").parse(fromDate)
+    val toDateISO = SimpleDateFormat("yyyy-MM-dd").parse(toDate)
+
+    for(s in scratchList){
+        val dateISO = SimpleDateFormat("yyyy-MM-dd").parse(s.date)
+        if (text.length > 0 && !s.description.lowercase().contains(text.lowercase())){
+            continue
+        }
+        if (dateISO.before(fromDateISO) || dateISO.after(toDateISO)){
+            continue;
+        }
+        val month = s.date.substring(5, 7).toInt()
+        if (groupedByMonth[month] == null){
+            groupedByMonth[month] = mutableListOf()
+        }
+        groupedByMonth[month]!!.add(s)
+    }
+    Column(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .heightIn(0.dp, 10000.dp)) {
+        for (p in groupedByMonth) {
+            /* Скрывающаяся вкладка с месяцами: */
+            Accordion(
+                sections = listOf(
+                    CollapsableListSection(
+                        /* заголовок вкладки */
+                        header = {
+                            Text(text = monthMass[p.key - 1], color = Primary)
+                        },
+                        /* контент вкладки */
+                        rows = p.value.map { scratch ->
+                            { ScratchCard(scratch = scratch, onNavigate = {currentDesc = scratch.description; openDescDialog = true}) }
+                        }
+                    ),
                 )
-            ),
-            CollapsableListSection(
-                header = {
-                    Text(text = "January", color = Primary)
-                },
-                rows = listOf(
-                    { ScratchCard(onNavigate) },
-                    { ScratchCard(onNavigate) },
-                    { ScratchCard(onNavigate) }
-                )
-            ),
-        )
-    )
+            )
+        }
+    }
+    if(openDescDialog){
+        DescriptionDialog(desc = currentDesc) {
+            openDescDialog = false
+
+        }
+    }
 }

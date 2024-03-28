@@ -67,7 +67,7 @@ import androidx.compose.ui.unit.em
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditableScreen(scratch: Scratch ?= null, onChanges: (Boolean) -> Unit) {
+fun EditableScreen(scratch: Scratch ?= null, onChanges: (Boolean) -> Unit, navigate: (ScreenType) -> Unit) {
     var newScratch by remember {
         mutableStateOf(
             scratch ?: Scratch(
@@ -103,6 +103,7 @@ fun EditableScreen(scratch: Scratch ?= null, onChanges: (Boolean) -> Unit) {
                 images = listOf()
             )
             saveScratch(context, newScratch)
+            mToast(context, navigate)
             onChanges(false)
         }) {
             Icon(
@@ -150,7 +151,7 @@ fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (
         }
     })
     if (isEdit) {
-        EditableScreen(null, {hasntSavedChanges = it})
+        EditableScreen(null, {hasntSavedChanges = it}, navigate)
     } else {
         Row {
             Text(

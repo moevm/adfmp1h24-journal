@@ -1,5 +1,7 @@
 package adfmp1h24.journal
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Sidebar() {
     /* открыт/закрыт */
@@ -25,9 +28,20 @@ fun Sidebar() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     /* текущий экран */
     var screen by remember { mutableStateOf(ScreenType.Library) }
+    var unsavedChanges by remember {
+        mutableStateOf(false)
+    }
+    var handlerUnsavedOpened by remember {
+        mutableStateOf(false)
+    }
     val scope = rememberCoroutineScope()
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr ) {
+        if (handlerUnsavedOpened){
+            confirmDialog(desc = "Изменения не сохранены. Хотите выйти?",  {
+                handlerUnsavedOpened = false
+            }, { handlerUnsavedOpened = false; unsavedChanges = false; screen = ScreenType.Library })
+        }
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -35,7 +49,11 @@ fun Sidebar() {
                     Row(
                         modifier = Modifier.clickable{
                             /* сменить экран и закрыть sidebar */
-                            screen = ScreenType.Library
+                            if (unsavedChanges) {
+                                handlerUnsavedOpened = true
+                            } else {
+                                screen = ScreenType.Library
+                            }
                             scope.launch { drawerState.close() }
                         }
                     ) {
@@ -44,7 +62,11 @@ fun Sidebar() {
                     }
                     Row(
                         modifier = Modifier.clickable{
-                            screen = ScreenType.Scratch
+                            if (unsavedChanges) {
+                                handlerUnsavedOpened = true
+                            } else {
+                                screen = ScreenType.Scratch
+                            }
                             scope.launch { drawerState.close() }
                         }
                     ) {
@@ -52,7 +74,11 @@ fun Sidebar() {
                     }
                     Row(
                         modifier = Modifier.clickable{
-                            screen = ScreenType.About
+                            if (unsavedChanges) {
+                                handlerUnsavedOpened = true
+                            } else {
+                                screen = ScreenType.About
+                            }
                             scope.launch { drawerState.close() }
                         }
                     ) {
@@ -71,7 +97,7 @@ fun Sidebar() {
                         sidebarState = drawerState,
                         scope = scope
                     )
-                    ScreenType.Scratch -> ScratchScreen(isEdit = true, null, {screen = it})
+                    ScreenType.Scratch -> ScratchScreen(isEdit = true, null, {screen = it}, unsavedChanges, { unsavedChanges = it })
                     ScreenType.About -> AboutScreen(navigate = { screen = it })
                 }
             }

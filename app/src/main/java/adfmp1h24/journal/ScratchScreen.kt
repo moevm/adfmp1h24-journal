@@ -64,6 +64,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
 
+@Composable
+private fun navigateWrap(changes: Boolean, screenType: ScreenType, navigate: (ScreenType) -> Unit) {
+    if (!changes) {
+        navigate(screenType)
+    } else {
+        confirmDialog(desc = "Изменения не сохранены. Хотите выйти?",  {}, {navigate(screenType)})
+    }
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -139,11 +148,10 @@ fun ViewScreen(scratch: Scratch) {
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (ScreenType) -> Unit){
+fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (ScreenType) -> Unit, changes: Boolean, onChanges: (Boolean) -> Unit){
     var isOpen by remember { mutableStateOf(false) }
-    var hasntSavedChanges by remember { mutableStateOf(false) }
     BackHandler(onBack = {
-        if (hasntSavedChanges){
+        if (changes){
             isOpen = true
         }
         else{
@@ -151,7 +159,7 @@ fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (
         }
     })
     if (isEdit) {
-        EditableScreen(null, {hasntSavedChanges = it}, navigate)
+        EditableScreen(null, onChanges, navigate)
     } else {
         Row {
             Text(
@@ -236,13 +244,13 @@ fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (
     if (isOpen){
         confirmDialog(desc = "Изменения не сохранены. Хотите выйти?",  {
             isOpen = false
-        }, {navigate(it)})
+        }, { onChanges(false); navigate(ScreenType.Library) })
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun confirmDialog(desc: String, onDismiss: () -> Unit, onNavigate: (ScreenType) -> Unit){
+fun confirmDialog(desc: String, onDismiss: () -> Unit, onExit: () -> Unit){
     AlertDialog(onDismissRequest = onDismiss) {
         val shp = RoundedCornerShape(12.dp)
         Surface(Modifier.shadow(3.dp, shp), shp, Color.White) {
@@ -262,7 +270,7 @@ fun confirmDialog(desc: String, onDismiss: () -> Unit, onNavigate: (ScreenType) 
                     Button(onClick = {onDismiss()}) {
                         Text(text = "Cancel")
                     }
-                    Button(onClick = {onNavigate(ScreenType.Library)}) {
+                    Button(onClick = {onExit()}) {
                         Text(text = "Exit")
                     }
                 }

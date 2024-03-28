@@ -54,11 +54,20 @@ import java.security.AccessController.getContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.em
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditableScreen(scratch: Scratch ?= null) {
+fun EditableScreen(scratch: Scratch ?= null, onChanges: (Boolean) -> Unit) {
     var newScratch by remember {
         mutableStateOf(
             scratch ?: Scratch(
@@ -77,7 +86,7 @@ fun EditableScreen(scratch: Scratch ?= null) {
     Row {
         OutlinedTextField(
             value = title,
-            onValueChange = { title = it },
+            onValueChange = { title = it; onChanges(true) },
             modifier = Modifier
                 .weight(1f),
             colors = TextFieldDefaults.textFieldColors(
@@ -94,6 +103,7 @@ fun EditableScreen(scratch: Scratch ?= null) {
                 images = listOf()
             )
             saveScratch(context, newScratch)
+            onChanges(false)
         }) {
             Icon(
                 modifier = Modifier.fillMaxSize(),
@@ -105,7 +115,7 @@ fun EditableScreen(scratch: Scratch ?= null) {
     }
     OutlinedTextField(
         value = description,
-        onValueChange = { description = it },
+        onValueChange = { description = it; onChanges(true) },
         modifier = Modifier
             .padding(vertical = 10.dp)
             .fillMaxWidth(),
@@ -117,7 +127,7 @@ fun EditableScreen(scratch: Scratch ?= null) {
     )
     CustomDatePicker(
         date = LocalDate.parse(pickedDate, DateTimeFormatter.ISO_DATE)
-    ) { pickedDate = it.format(DateTimeFormatter.ISO_DATE) }
+    ) { pickedDate = it.format(DateTimeFormatter.ISO_DATE); onChanges(true) }
 }
 
 
@@ -129,9 +139,18 @@ fun ViewScreen(scratch: Scratch) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (ScreenType) -> Unit){
-    BackHandler(onBack = {navigate(ScreenType.Library)})
+    var isOpen by remember { mutableStateOf(false) }
+    var hasntSavedChanges by remember { mutableStateOf(false) }
+    BackHandler(onBack = {
+        if (hasntSavedChanges){
+            isOpen = true
+        }
+        else{
+            navigate(ScreenType.Library)
+        }
+    })
     if (isEdit) {
-        EditableScreen()
+        EditableScreen(null, {hasntSavedChanges = it})
     } else {
         Row {
             Text(
@@ -209,6 +228,42 @@ fun ScratchScreen(isEdit: Boolean = false, scratch: Scratch ?= null, navigate: (
                         modifier = Modifier.fillMaxSize(),
                         contentDescription = null,
                     )
+                }
+            }
+        }
+    }
+    if (isOpen){
+        confirmDialog(desc = "Изменения не сохранены. Хотите выйти?",  {
+            isOpen = false
+        }, {navigate(it)})
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun confirmDialog(desc: String, onDismiss: () -> Unit, onNavigate: (ScreenType) -> Unit){
+    AlertDialog(onDismissRequest = onDismiss) {
+        val shp = RoundedCornerShape(12.dp)
+        Surface(Modifier.shadow(3.dp, shp), shp, Color.White) {
+            Column {
+                Box(
+                    contentAlignment = Alignment.Center, modifier = Modifier
+                        .padding(10.dp)
+                        .height(70.dp)
+                ) {
+                    Text(
+                        desc,
+                        fontSize = 6.em,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Row{
+                    Button(onClick = {onDismiss()}) {
+                        Text(text = "Cancel")
+                    }
+                    Button(onClick = {onNavigate(ScreenType.Library)}) {
+                        Text(text = "Exit")
+                    }
                 }
             }
         }

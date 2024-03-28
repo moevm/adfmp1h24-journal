@@ -249,7 +249,7 @@ fun confirmDialog(desc: String, onDismiss: () -> Unit, onNavigate: (ScreenType) 
                 Box(
                     contentAlignment = Alignment.Center, modifier = Modifier
                         .padding(10.dp)
-                        .height(70.dp)
+                        .height(100.dp)
                 ) {
                     Text(
                         desc,
@@ -257,7 +257,7 @@ fun confirmDialog(desc: String, onDismiss: () -> Unit, onNavigate: (ScreenType) 
                         textAlign = TextAlign.Center
                     )
                 }
-                Row{
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
                     Button(onClick = {onDismiss()}) {
                         Text(text = "Cancel")
                     }
